@@ -1,7 +1,7 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from bot.modules.tables.form_table import upload_all_prices
+from bot.modules.tables.form_table import upload_tg_prices
 from bot.modules.input_price.format_tg_price import format_inputprice
 
 USERS = [22738294, 443667299]
@@ -54,24 +54,10 @@ async def processing(message: types.Message, state: FSMContext):
     first_tginput_dict = format_inputprice(first_tg_input)
     second_tginput_dict = format_inputprice(second_tg_input)
 
-    upload_all_prices(first_tginput_dict, second_tginput_dict)
+    upload_tg_prices(first_tginput_dict, second_tginput_dict)
     await message.reply("Обновление цен завершено.")
 
-    # form_excel()
-
-    # doc = open(os.path.join(BASE_DIR, 'bot', 'modules', 'excel', 'pikprice_masterprice.xlsx'), 'rb')
-
-    # art_unknown = open(os.path.join(BASE_DIR, 'bot', 'modules', 'input_price', 'article_unknown.txt'), 'rb')
-    # session = ftplib.FTP('pikprice.beget.tech', 'pikprice_sv', '*m4J6XMe')
-    # file = open(os.path.join(BASE_DIR, 'bot', 'modules', 'excel', 'pikprice_masterprice.xlsx'), 'rb')
-    # session.delete('pikprice_masterprice.xlsx')
-    # session.storbinary('STOR pikprice_masterprice.xlsx', file)
-    # file.close()
-    # session.quit()
-
     await state.finish()
-    # await message.answer_document(doc)
-    # await message.answer_document(art_unknown)
 
 
 def register_handlers_admin(dp: Dispatcher):

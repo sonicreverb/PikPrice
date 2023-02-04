@@ -138,9 +138,7 @@ def upload_tginput2_prices(input_dict):
     ).execute()
 
 
-def upload_all_prices(input_dict1, input_dict2):
-    # upload_store77_prices()
-    # upload_sotohit_prices()
+def upload_tg_prices(input_dict1, input_dict2):
     upload_tginput1_prices(input_dict1)
     upload_tginput2_prices(input_dict2)
 
