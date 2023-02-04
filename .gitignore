@@ -1,1 +1,4 @@
-catalog_parser
+/.idea/
+/catalog_parser/
+/creds/
+__pycache__
