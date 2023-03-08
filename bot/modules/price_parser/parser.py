@@ -8,14 +8,25 @@ def get_html(url):
 
 
 def get_price(html, site_type):
+    soup = BeautifulSoup(html, 'html.parser')
+
     if site_type == 'store77':
         soup = BeautifulSoup(html, 'html.parser')
-        price = soup.find('p', class_='price_title_product').get_text()[:-2].split()
-        price = price[0] + price[1]
+        split_price = soup.find('p', class_='price_title_product').get_text().split()
+        price = ''
+        for tmp in range(len(split_price) - 1):
+            price = price + split_price[tmp]
         return price
+
     elif site_type == 'sotohit':
-        soup = BeautifulSoup(html, 'html.parser')
         price = soup.find('div', class_='price-current').get_text()[1:-3]
+        return price
+
+    elif site_type == 'gsm':
+        split_price = soup.find('span', class_='product-price js-product-price').get_text().split()
+        price = ''
+        for tmp in range(len(split_price) - 1):
+            price = price + split_price[tmp]
         return price
 
 

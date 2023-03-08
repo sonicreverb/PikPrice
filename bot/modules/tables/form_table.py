@@ -26,6 +26,7 @@ def read_column(column_name):
     return values
 
 
+# todo все три функции в одну по DRY
 def upload_store77_prices():
     # массив с ценами, который будет загружён в таблицу в столбец H
     upload_data = []
@@ -40,7 +41,7 @@ def upload_store77_prices():
     # запись upload_data в таблицу
     service.spreadsheets().values().update(
         spreadsheetId=spreadsheet_id,
-        range="H2:H613",
+        range="I2:I",
         valueInputOption="RAW",
         body={'values': upload_data}
     ).execute()
@@ -49,9 +50,9 @@ def upload_store77_prices():
 def upload_sotohit_prices():
     # массив с ценами, который будет загружён в таблицу в столбец I
     upload_data = []
-    store77links = read_column('G')[1:]
+    sotolinks = read_column('G')[1:]
 
-    for link in store77links:
+    for link in sotolinks:
         if link == 'нет':
             upload_data.append(['ссылка на товар не найдена'])
         else:
@@ -60,7 +61,27 @@ def upload_sotohit_prices():
     # запись upload_data в таблицу
     service.spreadsheets().values().update(
         spreadsheetId=spreadsheet_id,
-        range="I2:I613",
+        range="J2:J613",
+        valueInputOption="RAW",
+        body={'values': upload_data}
+    ).execute()
+
+
+def upload_gsm_prices():
+    # массив с ценами, который будет загружён в таблицу в столбец I
+    upload_data = []
+    gsm_links = read_column('H')[1:]
+
+    for link in gsm_links:
+        if link == 'нет':
+            upload_data.append(['ссылка на товар не найдена'])
+        else:
+            upload_data.append([parse_price(link, 'gsm')])
+
+    # запись upload_data в таблицу
+    service.spreadsheets().values().update(
+        spreadsheetId=spreadsheet_id,
+        range="K2:K",
         valueInputOption="RAW",
         body={'values': upload_data}
     ).execute()
@@ -96,7 +117,7 @@ def upload_tginput1_prices(input_dict):
     # запись upload_data в таблицу
     service.spreadsheets().values().update(
         spreadsheetId=spreadsheet_id,
-        range="J2:J613",
+        range="L2:L",
         valueInputOption="RAW",
         body={'values': upload_data}
     ).execute()
@@ -132,7 +153,7 @@ def upload_tginput2_prices(input_dict):
     # запись upload_data в таблицу
     service.spreadsheets().values().update(
         spreadsheetId=spreadsheet_id,
-        range="K2:K613",
+        range="M2:M",
         valueInputOption="RAW",
         body={'values': upload_data}
     ).execute()
@@ -141,4 +162,3 @@ def upload_tginput2_prices(input_dict):
 def upload_tg_prices(input_dict1, input_dict2):
     upload_tginput1_prices(input_dict1)
     upload_tginput2_prices(input_dict2)
-
