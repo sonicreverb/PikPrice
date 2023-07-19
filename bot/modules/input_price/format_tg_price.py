@@ -1,6 +1,7 @@
 import re
 
 
+# форматирует входные данные (прайс-листы) из телеграмм каналов и возвращает словарь с наименованием товара[ценой].
 def format_inputprice(textinput):
     # разделяем сплошной текст на строки (каждая строка - один товар), заполняем им массив
     text_lines_li = textinput.split('\n')
@@ -12,7 +13,7 @@ def format_inputprice(textinput):
         for emoji_flag in emojiflag_li:
             if emoji_flag in line:
                 try:
-                    price = re.search('\d{4,6}', line)[0]
+                    price = re.search(r'\d{4,6}', line)[0]
                     name = line.split()
                     name = ''.join(name)
 

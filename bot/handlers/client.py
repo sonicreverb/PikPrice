@@ -1,5 +1,5 @@
 from aiogram import types, Dispatcher
-from bot.create_bot import dp, bot
+# from bot.create_bot import dp, bot
 from bot.keyboards import kb_admin
 
 USERS = [22738294, 443667299]
