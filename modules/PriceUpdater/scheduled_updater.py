@@ -1,9 +1,10 @@
-from bot.modules.GoogleSheets.tables import upload_sotohit_prices, upload_gsm_prices, upload_store77_prices
+from modules.GoogleSheets.tables import upload_sotohit_prices, upload_gsm_prices, upload_store77_prices
 import schedule
 import time
 import datetime
 
 
+# запускает парсинг цен с сайтов конкурентов и их загрузку в таблицу
 def upload_all_prices():
     upload_store77_prices()
     upload_sotohit_prices()
@@ -12,6 +13,7 @@ def upload_all_prices():
     print(f"Цены успешно обновлены: {datetime.datetime.now()}")
 
 
+# запускает процесс обновления цен с сайтов конкурентов по расписанию
 def run_scheduled_update():
 
     # Расписание для 9, 11, 14, 17 и 20 часов по Московскому времени
@@ -22,6 +24,6 @@ def run_scheduled_update():
     schedule.every().day.at("20:00").do(upload_all_prices)
 
     while True:
-        # Обновляем расписание и выполняем задачу, если время совпадает
+        # обновляем расписание и выполняем задачу, если время совпадает
         schedule.run_pending()
-        time.sleep(1)
+        time.sleep(30)

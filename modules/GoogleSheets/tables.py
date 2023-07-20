@@ -1,20 +1,21 @@
 import os
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
-from bot.modules.PriceUpdater.parser import parse_price
+from modules.PriceUpdater.parser import parse_price
 from bot.create_bot import BASE_DIR
 
 spreadsheet_id = '1j6iPfQH1sd3Xw3ZVI_RdN5Nb52buWoH0SPMJUR-2tdo'
 sheet_name = 'catalog'
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-sacc_json_path = os.path.join(BASE_DIR, 'bot', 'modules', 'GoogleSheets', 'creds', 'sacc1.json')
+sacc_json_path = os.path.join(BASE_DIR, 'modules', 'GoogleSheets', 'creds', 'sacc1.json')
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(sacc_json_path, scope)
 service = build('sheets', 'v4', credentials=credentials)
 sheet = service.spreadsheets()
 
 
+# считывает столбец из таблицы по его литералу, возвращает массив значений
 def read_column(column_name):
     result = service.spreadsheets().values().get(
         spreadsheetId=spreadsheet_id, range=sheet_name+'!'+column_name+':'+column_name).execute()
@@ -26,7 +27,7 @@ def read_column(column_name):
     return values
 
 
-# todo все три функции в одну по DRY
+# считывает из таблицы столбец ссылок, после чего заполняет массив ценами товаров, загружает цены в таблицу
 def upload_store77_prices():
     # массив с ценами, который будет загружён в таблицу в столбец H
     upload_data = []
@@ -51,6 +52,7 @@ def upload_store77_prices():
     ).execute()
 
 
+# считывает из таблицы столбец ссылок, после чего заполняет массив ценами товаров, загружает цены в таблицу
 def upload_sotohit_prices():
     # массив с ценами, который будет загружён в таблицу в столбец I
     upload_data = []
@@ -75,6 +77,7 @@ def upload_sotohit_prices():
     ).execute()
 
 
+# считывает из таблицы столбец ссылок, после чего заполняет массив ценами товаров, загружает цены в таблицу
 def upload_gsm_prices():
     # массив с ценами, который будет загружён в таблицу в столбец I
     upload_data = []
@@ -99,6 +102,8 @@ def upload_gsm_prices():
     ).execute()
 
 
+# принимает на вход словарь input_dict с наименованиями и ценами из прайс-листа в телеграмме, записывает неизвестные
+# именования в файл, загружает цены в таблицу
 def upload_tginput1_prices(input_dict):
     # массив с ценами, который будет загружён в таблицу в столбец J
     upload_data = []
@@ -110,7 +115,7 @@ def upload_tginput1_prices(input_dict):
         if name in input_dict:
             upload_data.append([input_dict[name]])
         else:
-            upload_data.append(['цена не найдена, либо ошибка именования'])
+            upload_data.append(['цена не найдена'])
 
     # запись наименований, встречающихся в телеграм прайсе, но не находящихся в таблице
     unknown_articles = []
@@ -119,9 +124,9 @@ def upload_tginput1_prices(input_dict):
             unknown_articles.append(name_spc)
     print("Найдено " + str(len(unknown_articles)) + " неизвестных наименований в первом прайс-листе.")
 
-    # если найдено хотя бы одно наименование
+    # если найдено хотя бы одно неизвестное наименование
     if len(unknown_articles) > 0:
-        with open(os.path.join(BASE_DIR, 'bot', 'modules', 'PriceUpdater', 'unknown_articles1.txt'),
+        with open(os.path.join(BASE_DIR, 'modules', 'PriceUpdater', 'unknown_articles1.txt'),
                   'w', encoding='utf-8') as file_output:
             for unkw_article in unknown_articles:
                 file_output.write(unkw_article + '\n')
@@ -135,6 +140,8 @@ def upload_tginput1_prices(input_dict):
     ).execute()
 
 
+# принимает на вход словарь input_dict с наименованиями и ценами из прайс-листа в телеграмме, записывает неизвестные
+# именования в файл, загружает цены в таблицу
 def upload_tginput2_prices(input_dict):
     # массив с ценами, который будет загружён в таблицу в столбец J
     upload_data = []
@@ -146,7 +153,7 @@ def upload_tginput2_prices(input_dict):
         if name in input_dict:
             upload_data.append([input_dict[name]])
         else:
-            upload_data.append(['цена не найдена, либо ошибка именования'])
+            upload_data.append(['цена не найдена'])
 
     # запись наименований, встречающихся в телеграм прайсе, но не находящихся в таблице
     unknown_articles = []
@@ -157,7 +164,7 @@ def upload_tginput2_prices(input_dict):
 
     # если найдено хотя бы одно наименование
     if len(unknown_articles) > 0:
-        with open(os.path.join(BASE_DIR, 'bot', 'modules', 'PriceUpdater', 'unknown_articles2.txt'),
+        with open(os.path.join(BASE_DIR, 'modules', 'PriceUpdater', 'unknown_articles2.txt'),
                   'w', encoding='utf-8') as file_output:
             for unk_article in unknown_articles:
                 file_output.write(unk_article + '\n')
@@ -171,6 +178,7 @@ def upload_tginput2_prices(input_dict):
     ).execute()
 
 
+# запускает обработку файлов с товарами из прайс-листа тг и их загрузку в таблицу
 def upload_tg_prices(input_dict1, input_dict2):
     upload_tginput1_prices(input_dict1)
     upload_tginput2_prices(input_dict2)

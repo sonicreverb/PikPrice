@@ -1,13 +1,15 @@
 import requests
-from bs4 import BeautifulSoup
 import re
+from bs4 import BeautifulSoup
 
 
+# возвращает html (reguest.get) указанного url'a
 def get_html(url):
     r = requests.get(url, verify=False)
     return r
 
 
+# принимает на вход html и тип сайта, парсит и возвращает цену позиции
 def get_price(html, site_type):
     soup = BeautifulSoup(html, 'html.parser')
 
@@ -31,24 +33,26 @@ def get_price(html, site_type):
         return price
 
 
+# принимает на вход url товара и тип сайта, получает html, вызывает get_price() и возвращает цену позиции
 def parse_price(url, site_type):
     html = get_html(url)
-    print(html)
     if html.status_code == 200:
         try:
             result = get_price(html.text, site_type)
-            print(result, url)
+            print(f"[{site_type.upper()}] {url} - {result}")
+            if result == '':
+                return 'none'
             return result
         except AttributeError:
             print('AttributeError in parser.py line 33', url)
             return 'error'
 
     else:
-        print('Warning HTMl status code 418 parser.py line 30 ', url)
+        print(f'[{site_type.upper()}] Warning HTMl status code 418 parser.py line 30 {url}')
         return 'invalid url'
 
 
-# форматирует входные данные (прайс-листы) из телеграмм каналов и возвращает словарь с наименованием товара[ценой].
+# форматирует входные данные (прайс-листы) из телеграмм каналов и возвращает словарь с наименованием товара[цена товара]
 def format_inputprice(textinput):
     # разделяем сплошной текст на строки (каждая строка - один товар), заполняем им массив
     text_lines_li = textinput.split('\n')

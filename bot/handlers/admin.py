@@ -1,8 +1,8 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from bot.modules.GoogleSheets.tables import upload_tg_prices
-from bot.modules.PriceUpdater.parser import format_inputprice
+from modules.GoogleSheets.tables import upload_tg_prices
+from modules.PriceUpdater.parser import format_inputprice
 
 USERS = [22738294, 443667299]
 
