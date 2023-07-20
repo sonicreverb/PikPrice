@@ -15,7 +15,7 @@ def upload_all_prices():
 def run_scheduled_update():
 
     # Расписание для 9, 11, 14, 17 и 20 часов по Московскому времени
-    schedule.every().day.at("9:00").do(upload_all_prices)
+    schedule.every().day.at("09:00").do(upload_all_prices)
     schedule.every().day.at("11:00").do(upload_all_prices)
     schedule.every().day.at("14:00").do(upload_all_prices)
     schedule.every().day.at("17:00").do(upload_all_prices)
