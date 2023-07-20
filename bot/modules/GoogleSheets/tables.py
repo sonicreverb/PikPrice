@@ -1,14 +1,14 @@
 import os
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
-from bot.modules.price_parser.parser import parse_price
+from bot.modules.PriceUpdater.parser import parse_price
 from bot.create_bot import BASE_DIR
 
 spreadsheet_id = '1j6iPfQH1sd3Xw3ZVI_RdN5Nb52buWoH0SPMJUR-2tdo'
 sheet_name = 'catalog'
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-sacc_json_path = os.path.join(BASE_DIR, 'bot', 'modules', 'tables', 'creds', 'sacc1.json')
+sacc_json_path = os.path.join(BASE_DIR, 'bot', 'modules', 'GoogleSheets', 'creds', 'sacc1.json')
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(sacc_json_path, scope)
 service = build('sheets', 'v4', credentials=credentials)
@@ -33,10 +33,14 @@ def upload_store77_prices():
     store77links = read_column('F')[1:]
 
     for link in store77links:
-        if link == 'нет':
-            upload_data.append(['ссылка на товар не найдена'])
-        else:
-            upload_data.append([parse_price(link, 'store77')])
+        try:
+            if link == 'нет':
+                upload_data.append(['ссылка на товар не найдена'])
+            else:
+                upload_data.append([parse_price(link, 'store77')])
+        except Exception as _ex:
+            upload_data.append(['ошибка'])
+            print(f'[UPLOAD STORE77 PRICES] Ошибка при попытке обновить цену товара - {link}\n {_ex}')
 
     # запись upload_data в таблицу
     service.spreadsheets().values().update(
@@ -53,10 +57,14 @@ def upload_sotohit_prices():
     sotolinks = read_column('G')[1:]
 
     for link in sotolinks:
-        if link == 'нет':
-            upload_data.append(['ссылка на товар не найдена'])
-        else:
-            upload_data.append([parse_price(link, 'sotohit')])
+        try:
+            if link == 'нет':
+                upload_data.append(['ссылка на товар не найдена'])
+            else:
+                upload_data.append([parse_price(link, 'sotohit')])
+        except Exception as _ex:
+            upload_data.append(['ошибка'])
+            print(f'[UPLOAD SOTOHIT PRICES] Ошибка при попытке обновить цену товара - {link}\n {_ex}')
 
     # запись upload_data в таблицу
     service.spreadsheets().values().update(
@@ -73,11 +81,15 @@ def upload_gsm_prices():
     gsm_links = read_column('H')[1:]
 
     for link in gsm_links:
-        if link == 'нет':
-            upload_data.append(['ссылка на товар не найдена'])
-        else:
-            upload_data.append([parse_price(link, 'gsm')])
-
+        print(link)
+        try:
+            if link == 'нет':
+                upload_data.append(['ссылка на товар не найдена'])
+            else:
+                upload_data.append([parse_price(link, 'gsm')])
+        except Exception as _ex:
+            upload_data.append(['ошибка'])
+            print(f"[UPLOAD GSM PRICES] Ошибка при попытке обновить цену товара - {link}\n {_ex}")
     # запись upload_data в таблицу
     service.spreadsheets().values().update(
         spreadsheetId=spreadsheet_id,
@@ -109,7 +121,7 @@ def upload_tginput1_prices(input_dict):
 
     # если найдено хотя бы одно наименование
     if len(unknown_articles) > 0:
-        with open(os.path.join(BASE_DIR, 'bot', 'modules', 'input_price', 'unknown_articles1.txt'),
+        with open(os.path.join(BASE_DIR, 'bot', 'modules', 'PriceUpdater', 'unknown_articles1.txt'),
                   'w', encoding='utf-8') as file_output:
             for unkw_article in unknown_articles:
                 file_output.write(unkw_article + '\n')
@@ -145,7 +157,7 @@ def upload_tginput2_prices(input_dict):
 
     # если найдено хотя бы одно наименование
     if len(unknown_articles) > 0:
-        with open(os.path.join(BASE_DIR, 'bot', 'modules', 'input_price', 'unknown_articles2.txt'),
+        with open(os.path.join(BASE_DIR, 'bot', 'modules', 'PriceUpdater', 'unknown_articles2.txt'),
                   'w', encoding='utf-8') as file_output:
             for unk_article in unknown_articles:
                 file_output.write(unk_article + '\n')
