@@ -1,4 +1,5 @@
 from modules.GoogleSheets.tables import upload_sotohit_prices, upload_gsm_prices, upload_store77_prices
+from modules.TelegramAlerts.notifier import send_notification
 import schedule
 import time
 import datetime
@@ -10,7 +11,7 @@ def upload_all_prices():
     upload_sotohit_prices()
     upload_gsm_prices()
 
-    print(f"Цены успешно обновлены: {datetime.datetime.now()}")
+    send_notification(f"[PIKPRICE] Цены успешно обновлены ({datetime.datetime.now()}).")
 
 
 # запускает процесс обновления цен с сайтов конкурентов по расписанию
@@ -25,5 +26,9 @@ def run_scheduled_update():
 
     while True:
         # обновляем расписание и выполняем задачу, если время совпадает
-        schedule.run_pending()
-        time.sleep(30)
+        try:
+            schedule.run_pending()
+            time.sleep(30)
+        except Exception as _exception:
+            send_notification(f"[PIKPRICE] При попытке обновления цен возникла ошибка ({datetime.datetime.now()}).\n"
+                              f"{_exception}")
