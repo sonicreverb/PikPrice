@@ -8,3 +8,5 @@ oauth2client
 openpyxl
 schedule
 notifiers
+selenium
+webdriver_manager

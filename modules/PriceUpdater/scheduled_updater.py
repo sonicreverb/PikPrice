@@ -1,5 +1,5 @@
-from modules.GoogleSheets.tables import upload_sotohit_prices, upload_gsm_prices, upload_store77_prices
-from modules.TelegramAlerts.notifier import send_notification
+from modules.TelegramAlerts import send_notification
+import modules.PriceUpdater.prices_parser as prices_parser
 import schedule
 import time
 import datetime
@@ -7,9 +7,11 @@ import datetime
 
 # запускает парсинг цен с сайтов конкурентов и их загрузку в таблицу
 def upload_all_prices():
-    upload_store77_prices()
-    upload_sotohit_prices()
-    upload_gsm_prices()
+    for site_type in prices_parser.sites_typeData:
+        try:
+            prices_parser.update_prices(site_type)
+        except Exception as _ex:
+            print([f'[UPLOAD ALL PRICES {site_type.upper()}] Ошибка! ({_ex})'])
 
     send_notification(f"[PIKPRICE] Цены успешно обновлены ({datetime.datetime.now()}).")
 
