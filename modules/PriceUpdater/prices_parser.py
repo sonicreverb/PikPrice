@@ -70,7 +70,7 @@ def update_prices(site_type):
                 # -> вставка в массив цены, если она не была найдена, то вызовется обработка исключений и в массив будет
                 # вставлено значение "ошибка"
                 driver_management.switch_url(driver, url)
-                time.sleep(time_delay)
+                # time.sleep(time_delay)
                 upload_data[elem_id] = [get_price(driver, site_type)]
             print(f'[UPDATE PRICES {site_type.upper()}] Было получено значение цены: '
                   f'{upload_data[elem_id][0]}\nCURRENT URL: {url}')
@@ -81,9 +81,21 @@ def update_prices(site_type):
             upload_data[elem_id] = ['ошибка']
 
     wr_column = sites_typeData[site_type].get('columnW', None)
-    wr_range = f"{wr_column}2:{wr_column}"
-    print(upload_data, wr_range)
-    gsheet.write_data(wr_range, upload_data)
+
+    # запись по 100 позиций
+    low_border = 0
+    high_border = 100
+    while high_border < len(upload_data) - 1:
+        if high_border % 100 == 0:
+            wr_range = f"{wr_column}{low_border + 2}:{wr_column}{high_border + 2}"
+            gsheet.write_data(wr_range, upload_data[low_border:high_border + 1])
+            low_border = high_border + 1
+
+        high_border += 1
+
+    wr_range = f"{wr_column}{low_border + 2}:{wr_column}{high_border + 2}"
+    gsheet.write_data(wr_range, upload_data[low_border:high_border + 1])
+
     driver_management.kill_driver(driver)
 
 
