@@ -5,7 +5,6 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
 # возвращает пустой драйвер

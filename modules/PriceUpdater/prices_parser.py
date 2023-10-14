@@ -1,8 +1,11 @@
+import os.path
 import re
 import time
+import pickle
 
 import modules.PriceUpdater.driver_management as driver_management
 import modules.GoogleSheets as gsheet
+from modules import BASE_DIR
 
 # словарь с ключевыми данными для парсинга каждого сайта (полиморфизм на минималках)
 sites_typeData = {'Store77': {'columnR': 'F', 'columnW': 'J', 'price_nameTag': 'p',
@@ -80,13 +83,17 @@ def update_prices(site_type):
                   f'MESSY URL: {url}')
             upload_data[elem_id] = ['ошибка']
 
+    # сохранение upload_data
+    with open(os.path.join(BASE_DIR, 'PriceUpdater', 'data', f"{site_type.lower()}.pkl"), "wb") as file:
+        pickle.dump(upload_data, file)
+
     wr_column = sites_typeData[site_type].get('columnW', None)
 
     # запись по 100 позиций
     low_border = 0
-    high_border = 100
+    high_border = 50
     while high_border < len(upload_data) - 1:
-        if high_border % 100 == 0:
+        if high_border % 50 == 0:
             wr_range = f"{wr_column}{low_border + 2}:{wr_column}{high_border + 2}"
             gsheet.write_data(wr_range, upload_data[low_border:high_border + 1])
             low_border = high_border + 1
@@ -97,7 +104,6 @@ def update_prices(site_type):
     gsheet.write_data(wr_range, upload_data[low_border:high_border + 1])
 
     driver_management.kill_driver(driver)
-
 
 # TODO парсинг цен из телеграмм каналов
 # принимает на вход словарь input_dict с наименованиями и ценами из прайс-листа в телеграмме, записывает неизвестные
