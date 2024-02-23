@@ -8,14 +8,17 @@ import os
 
 
 # возвращает пустой драйвер
-def create_driver(images_enabled=False):
-    # оключение загрузки изображений для оптимизации
+def create_driver(images_enabled=False, notifications_enabled=False):
     chrome_options = Options()
+    # отключение загрузки изображений для оптимизации
     if not images_enabled:
         chrome_options.add_argument(f"--blink-settings=imagesEnabled=false")
+    # отключение показа уведомлений браузера
+    if not notifications_enabled:
+        chrome_options.add_argument("--disable-infobars")
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-    print('[DRIVER INFO] Driver created successfully.\n')
+    print('[DRIVER INFO] Driver created successfully.')
     # logs.log_info('[DRIVER INFO] Driver created successfully.')
     return driver
 
@@ -24,7 +27,7 @@ def create_driver(images_enabled=False):
 def kill_driver(driver):
     driver.close()
     driver.quit()
-    print('[DRIVER INFO] Driver was closed successfully.\n')
+    print('[DRIVER INFO] Driver was closed successfully.')
     # logs.log_info('[DRIVER INFO] Driver was closed successfully.')
 
 
