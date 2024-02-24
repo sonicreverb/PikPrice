@@ -4,8 +4,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
-import os
-
 
 # возвращает пустой драйвер
 def create_driver(images_enabled=False, notifications_enabled=False):
@@ -16,6 +14,8 @@ def create_driver(images_enabled=False, notifications_enabled=False):
     # отключение показа уведомлений браузера
     if not notifications_enabled:
         chrome_options.add_argument("--disable-infobars")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_experimental_option("prefs", {"profile.default_content_setting_values.notifications": 2})
 
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     print('[DRIVER INFO] Driver created successfully.')
