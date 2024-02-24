@@ -1,7 +1,7 @@
 import os
 from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
-from bot.create_bot import BASE_DIR
+from modules import BASE_DIR
 
 spreadsheet_id = '1j6iPfQH1sd3Xw3ZVI_RdN5Nb52buWoH0SPMJUR-2tdo'
 sheet_name = 'catalog'
