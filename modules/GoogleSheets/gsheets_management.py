@@ -13,6 +13,11 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(sacc_json_path, s
 service = build('sheets', 'v4', credentials=credentials)
 sheet = service.spreadsheets()
 
+PRODUCT_NAMES_COLUMN = 'A'
+PRODUCT_ARTICLES_COLUMN = 'B'
+
+TELEGRAM_PRICE_COLUMN = 'N'
+
 
 # считывает столбец из таблицы по его литералу, возвращает массив значений
 def read_column(column_name):

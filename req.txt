@@ -10,3 +10,5 @@ schedule
 notifiers
 selenium
 webdriver_manager
+pandas
+xlrd

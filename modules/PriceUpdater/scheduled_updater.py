@@ -1,11 +1,14 @@
-from modules.TelegramAlerts import send_notification
 import modules.PriceUpdater.prices_parser as prices_parser
 import schedule
 import time
 import datetime
 
+from modules.TelegramAlerts import send_notification
+from modules.PriceUpdater.sbermarket_parser import start_megamarket_parsing
+from modules.PriceUpdater.telegram_parser import start_telegram_parsing
 
-# запускает парсинг цен с сайтов конкурентов и их загрузку в таблицу
+
+# запускает парсинг цен с сайтов конкурентов + мегамаркет и их загрузку в таблицу
 def upload_all_prices():
     for site_type in prices_parser.sites_typeData:
         flagSuccesUpdate = True
@@ -17,7 +20,20 @@ def upload_all_prices():
             flagSuccesUpdate = False
         finally:
             if flagSuccesUpdate:
-                send_notification(f"[PIKPRICE {site_type.upper()}] Цены успешно обновлены ({datetime.datetime.now()}).")
+                send_notification(f"[PIKPRICE {site_type.upper()}] Цены конкурентов "
+                                  f"успешно обновлены ({datetime.datetime.now()}).")
+
+    flagSuccesUpdate = True
+    try:
+        start_megamarket_parsing()
+    except Exception as _ex:
+        print([f'[MEGAMARKET PARSING] Ошибка! ({_ex})'])
+        send_notification(f"[PIKPRICE MEGAMARKET] Ошибка во время обновления товаров! ({_ex}).")
+        flagSuccesUpdate = False
+    finally:
+        if flagSuccesUpdate:
+            send_notification(f"[PIKPRICE MEGAMARKET] Цены маркетплейсов "
+                              f"успешно обновлены ({datetime.datetime.now()}).")
 
 
 # запускает процесс обновления цен с сайтов конкурентов по расписанию
@@ -27,6 +43,7 @@ def run_scheduled_update():
     schedule.every().day.at("11:00").do(upload_all_prices)
     schedule.every().day.at("14:00").do(upload_all_prices)
     schedule.every().day.at("17:00").do(upload_all_prices)
+    schedule.every().day.at("18:00").do(start_telegram_parsing)
     schedule.every().day.at("20:00").do(upload_all_prices)
 
     while True:

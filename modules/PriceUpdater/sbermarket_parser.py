@@ -106,6 +106,3 @@ def start_megamarket_parsing():
     # запись полученных цен в гугл таблицу (каталог)
     gsheet_manager.write_data("R2:R", upload_medium_prices)
     gsheet_manager.write_data("S2:S", upload_minimum_prices)
-
-
-start_megamarket_parsing()
