@@ -15,7 +15,9 @@ sites_typeData = {'Store77': {'columnR': 'F', 'columnW': 'J', 'price_nameTag': '
                   'GSM': {'columnR': 'H', 'columnW': 'L', 'price_nameTag': 'span',
                           'price_class': 'product-price js-product-price'},
                   'ReStore': {'columnR': 'I', 'columnW': 'M', 'price_nameTag': 'div',
-                              'price_class': 'detail-price__current'}}
+                              'price_class': 'detail-price__current'},
+                  'Telegram': None,
+                  'Megamarket': None}
 
 
 # ПОЛУЧЕНИЕ ЦЕНЫ ТОВАРА С САЙТА

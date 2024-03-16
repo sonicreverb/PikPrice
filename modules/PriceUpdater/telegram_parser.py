@@ -2,7 +2,6 @@ import os.path
 import time
 import pandas as pd
 import json
-import datetime
 
 from modules.TelegramAlerts import send_notification
 
@@ -355,15 +354,5 @@ def upload_tg_prices():
 
 
 def start_telegram_parsing():
-    flagSuccesUpdate = True
-    try:
-        download_last_tg_price()
-        upload_tg_prices()
-    except Exception as _ex:
-        print([f'[TELEGRAM PARSING] Ошибка! ({_ex})'])
-        send_notification(f"[PIKPRICE TELEGRAM] Ошибка во время обновления цен товаров! ({_ex}).")
-        flagSuccesUpdate = False
-    finally:
-        if flagSuccesUpdate:
-            send_notification(f"[PIKPRICE MEGAMARKET] Цены прайс-листа телеграм "
-                              f"успешно обновлены ({datetime.datetime.now()}).")
+    download_last_tg_price()
+    upload_tg_prices()
