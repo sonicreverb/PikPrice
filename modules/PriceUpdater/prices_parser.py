@@ -1,11 +1,11 @@
-import os.path
 import re
-import time
-import pickle
+# import os.path
+# import time
+# import pickle
 
 import modules.PriceUpdater.driver_management as driver_management
 import modules.GoogleSheets as gsheet
-from modules import BASE_DIR
+# from modules import BASE_DIR
 
 # словарь с ключевыми данными для парсинга каждого сайта (полиморфизм на минималках)
 sites_typeData = {'Store77': {'columnR': 'F', 'columnW': 'J', 'price_nameTag': 'p',
@@ -48,7 +48,7 @@ def update_prices(site_type):
     driver.get('https://duckduckgo.com/')
 
     # задержка между обращениями к сайтам
-    time_delay = 2
+    # time_delay = 2
 
     if site_type not in sites_typeData:
         raise Exception(f"[UPDATE PRICES {site_type.upper()}] Некорректно указан тип сайта для парсинга цен.")
@@ -84,8 +84,8 @@ def update_prices(site_type):
             upload_data[elem_id] = ['ошибка']
 
     # сохранение upload_data
-    with open(os.path.join(BASE_DIR, 'PriceUpdater', 'data', f"{site_type.lower()}.pkl"), "wb") as file:
-        pickle.dump(upload_data, file)
+    # with open(os.path.join(BASE_DIR, 'PriceUpdater', 'data', f"{site_type.lower()}.pkl"), "wb") as file:
+    #     pickle.dump(upload_data, file)
 
     wr_column = sites_typeData[site_type].get('columnW', None)
 
